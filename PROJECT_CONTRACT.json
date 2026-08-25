@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2334,
+    "production_files": 24,
+    "production_packages": 11,
+    "test_files": 11,
+    "production_functions": 139,
+    "decision_points": 334
+  },
+  "persistence": {
+    "module": "go.etcd.io/bbolt",
+    "entities": [
+      "StaffAccount",
+      "ContactMethod",
+      "AuditEntry",
+      "StudioSetting"
+    ],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {
+      "steps": [
+        "管理员提交人员姓名、联系方式和角色",
+        "服务校验并规范化人员资料",
+        "bbolt 持久化人员和联系方式并写入审计",
+        "人员列表按姓名检索并显示创建结果"
+      ],
+      "test": "TestWorkflowCreateStaff"
+    },
+    {
+      "steps": [
+        "管理员按人员编号发起资料更新",
+        "服务从持久化存储加载目标人员",
+        "领域模型校验资料并执行版本化更新",
+        "缺失人员返回可处理的明确错误"
+      ],
+      "test": "TestBusinessChain02"
+    },
+    {
+      "steps": [
+        "管理员创建并激活化妆师账号",
+        "管理员按版本号停用账号",
+        "服务持久化状态变更并写入审计",
+        "审计查询确认状态变更轨迹"
+      ],
+      "test": "TestWorkflowDisableAndAudit"
+    }
+  ]
+}
