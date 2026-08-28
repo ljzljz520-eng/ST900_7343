@@ -138,6 +138,9 @@ func (m *Manager) UpdateStaff(command UpdateStaffCommand) (domain.StaffAccount, 
 	if err != nil {
 		return domain.StaffAccount{}, translateStoreError(err)
 	}
+	if account == nil {
+		return domain.StaffAccount{}, MissingRecordError{Entity: "人员", ID: command.StaffID}
+	}
 	role, _ := domain.ParseRole(input.Role)
 	previousRole := account.Role
 	if err := account.UpdateProfile(input.Name, input.Phone, input.Email, role, m.clock.Now()); err != nil {
